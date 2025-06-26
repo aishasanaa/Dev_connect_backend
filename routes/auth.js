@@ -35,7 +35,7 @@
 
 const express = require("express");
 const router = express.Router();
-const { register, login, getMe,getProfile,updateProfile } = require("../controller/authController");
+const { register, login, getMe,getProfile,updateProfile, applyJob } = require("../controller/authController");
 
 const auth = require("../middleware/authMiddleware");
 const tryCatchMiddleware = require("../middleware/tryCatchMiddleware");
@@ -46,5 +46,6 @@ router.get("/me", auth, tryCatchMiddleware(getMe));
 
 router.get("/profile", auth, tryCatchMiddleware(getProfile));
 router.put("/profile", auth, tryCatchMiddleware(updateProfile));
+router.post("/apply-job", auth, tryCatchMiddleware(applyJob));
 
 module.exports = router;

@@ -2,6 +2,8 @@ const User = require("../model/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+
+
 // Register Controller
 exports.register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -100,3 +102,58 @@ exports.updateProfile = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
+
+// @desc    Apply for a job
+// @route   POST /api/auth/apply-job
+// @access  Private
+// exports.applyJob = async (req, res) => {
+//   try {
+//     const user = await User.findById(req.user.id);
+//     if (!user) return res.status(404).json({ message: "User not found" });
+
+//     user.appliedJobs.push(req.body.job);
+//     await user.save();
+
+//     res.status(200).json({ message: "Job applied successfully", appliedJobs: user.appliedJobs });
+//   } catch (err) {
+//     console.error("Error applying job:", err);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
+
+// exports.getProfile = async (req, res) => {
+//   try {
+//     const user = await User.findById(req.user.id).select("-password");
+//     if (!user) return res.status(404).json({ message: "User not found" });
+    
+//     res.json(user); // This includes appliedJobs
+//   } catch (err) {
+//     console.error("Error fetching profile:", err);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
+
+exports.applyJob = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.appliedJobs.push({
+      title: req.body.title,
+      company: req.body.company,
+      location: req.body.location,
+      type: req.body.type,
+      appliedAt: new Date(),
+    });
+
+    await user.save();
+
+    res.json({ message: "Job applied successfully", appliedJobs: user.appliedJobs });
+  } catch (err) {
+    console.error("Error applying to job:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
